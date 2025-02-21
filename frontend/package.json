@@ -1,0 +1,33 @@
+{
+  "name": "rac",
+  "version": "1.0.0",
+  "description": "GUI for the RAC API",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "tw": "tailwind build ./styles/globals.css -o ./styles/tailwind.css"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.11",
+    "axios": "^1.5.0",
+    "framer-motion": "^10.16.4",
+    "next": "latest",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "tailwindcss": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "20.6.3",
+    "@types/react": "18.2.22",
+    "autoprefixer": "^10.4.16",
+    "typescript": "5.2.2"
+  }
+}
