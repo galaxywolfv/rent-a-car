@@ -4,17 +4,20 @@ import axios from "axios";
 import config from "../config";
 import { useNotification } from "./useNotification";
 import { useAuth } from "@/AuthContext";
+import { Role, User } from "../types";
 
 function useAuthentication() {
   const router = useRouter();
+
   const { onSuccess, onError } = useNotification()
+  const { setIsAuthenticated, setRole } = useAuth();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
-
   const [isAuth, setIsAuth] = useState<boolean>(false);
-  const baseUrl = config.user;
-  const { setIsAuthenticated } = useAuth();
   const [token, setToken] = useState<string | null>(null);
+
+  const baseUrl = config.user;
 
   useEffect(() => {
     setToken(localStorage.getItem('token'));
@@ -70,7 +73,10 @@ function useAuthentication() {
   const logout = async () => {
     try {
       localStorage.removeItem('token')
+      
       setIsAuthenticated(false);
+      setToken(null);
+      setRole(Role.user);
       onSuccess('Logged out successfully');
     } catch (error) {
       console.log(error)
@@ -86,19 +92,25 @@ function useAuthentication() {
     }
     try {
       setLoading(true);
-      const user = await axios.get(`${baseUrl}/verify`, {
+
+      const response = await axios.get(`${baseUrl}/verify`, {
         headers: {
           bearer: token,
         },
       });
 
+      const user: User = response.data;
+
       setToken(token);
       setIsAuthenticated(true);
       setIsAuth(true);
+      setRole(user.role);
     } catch (error) {
       setToken(null);
       setIsAuthenticated(false);
       setIsAuth(false);
+      setRole(Role.user);
+
       localStorage.removeItem('token');
     } finally {
       setLoadingAuth(false);

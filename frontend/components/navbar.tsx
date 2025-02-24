@@ -1,19 +1,22 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import useAuthentication from '@/lib/hooks/useAuthentication';
 import { useRouter } from 'next/router';
 import { Role } from '@/lib/types';
-import config from '@/lib/config';
 import ActionButton from './common/actionButton';
 import { useAuth } from '@/AuthContext';
 
 const Navbar = () => {
     const { logout } = useAuthentication();
-    const { isAuthenticated } = useAuth();
-    const role = config.role;
+    const { isAuthenticated, role } = useAuth();
     const router = useRouter();
 
     const { id } = router.query;
+
+    const isDetailPage = (asPath: string, baseRoute: any) => {
+        const regex = new RegExp(`^/${baseRoute}/[^/]+$`);
+        return regex.test(asPath);
+    };          
 
     return (
         <>
@@ -26,18 +29,35 @@ const Navbar = () => {
                         </div>
                     </Link>
                     <div className="flex items-center space-x-2 md:order-2">
-                        {isAuthenticated && router.pathname === '/' && (
+
+                        {isAuthenticated && role == Role.maintainer && router.pathname === '/' && (
                             <ActionButton
-                                text='Create Garage'
-                                href='/car/create'
+                                text='Add Location'
+                                href='/garage/create'
                                 customClasses='bg-brand text-white'
                             />
                         )}
 
-                        {isAuthenticated && router.pathname.startsWith('/car/') && id && (
+                        {isAuthenticated && role == Role.user && isDetailPage(router.asPath, 'car') && id && (
+                            <ActionButton
+                                text='Rent Car'
+                                href={`/car/${id}/rent`}
+                                customClasses='bg-brand text-white'
+                            />
+                        )}
+
+                        {isAuthenticated && role == Role.maintainer && isDetailPage(router.asPath, 'car') && id && (
                             <ActionButton
                                 text='Edit Car'
-                                href={`/car/${id}/edit`} // Dynamically adds the extracted ID
+                                href={`/car/${id}/edit`}
+                                customClasses='bg-brand text-white'
+                            />
+                        )}
+
+                        {isAuthenticated && role == Role.maintainer && isDetailPage(router.asPath, 'garage') && id && (
+                            <ActionButton
+                                text='Edit Garage'
+                                href={`/garage/${id}/edit`}
                                 customClasses='bg-brand text-white'
                             />
                         )}

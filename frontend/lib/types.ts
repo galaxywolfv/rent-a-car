@@ -78,8 +78,8 @@ export type Car = {
  * Car status values.
  */
 export enum CarStatus {
-    available = 'available',
-    reserved = 'reserved',
+    available = 'Available',
+    reserved = 'Reserved',
 }
 
 /**

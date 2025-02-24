@@ -6,6 +6,7 @@ import useAuthentication from "@/lib/hooks/useAuthentication";
 import { useRouter } from "next/router";
 import { useCarContext } from "@/CarContext";
 import { useAuth } from "@/AuthContext";
+import { CarStatus } from "@/lib/types";
 
 /**
  * The Car Details Page component.
@@ -29,13 +30,13 @@ const CarPage = () => {
   }, [isAuthenticated, router.query, token]);
 
   // Format date to a readable string
-  const formatDateTime = (isoDateTime?: string) => 
+  const formatDateTime = (isoDateTime?: string) =>
     isoDateTime ? new Date(isoDateTime).toLocaleString() : "-";
 
   return (
     <>
       <Head>
-        <title>{car?.make} {car?.model} - Rent a Car</title>
+        <title>{car?.make} {car?.model} {config.titleWithSeparator}</title>
         <meta name="description" content={`View details for ${car?.make} ${car?.model}`} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -155,20 +156,6 @@ const CarPage = () => {
               />
             </div>
 
-            {/* Status */}
-            <div>
-              <label htmlFor="car-status" className="block mb-2 text-sm font-medium">Status</label>
-              <input
-                id="car-status"
-                type="text"
-                className={`shadow-sm border text-sm rounded-lg w-full p-2.5 ${
-                  car?.status === "available" ? "bg-green-100" : "bg-red-100"
-                }`}
-                value={car?.status || "-"}
-                readOnly
-              />
-            </div>
-
             {/* Created At */}
             <div>
               <label htmlFor="car-created-at" className="block mb-2 text-sm font-medium">Created At</label>
@@ -189,6 +176,19 @@ const CarPage = () => {
                 type="text"
                 className="bg-gray-50 border border-gray-300 text-sm rounded-lg w-full p-2.5"
                 value={formatDateTime(car?.updatedAt)}
+                readOnly
+              />
+            </div>
+
+            {/* Status */}
+            <div>
+              <label htmlFor="car-status" className="block mb-2 text-sm font-medium">Status</label>
+              <input
+                id="car-status"
+                type="text"
+                className={`shadow-sm border text-sm rounded-lg w-full p-2.5 ${car?.status === CarStatus.available ? "bg-green-100" : "bg-red-100"
+                  }`}
+                value={car?.status || CarStatus.reserved}
                 readOnly
               />
             </div>
